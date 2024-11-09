@@ -93,6 +93,7 @@ class Coder:
     suggest_shell_commands = True
     ignore_mentions = None
     chat_language = None
+    scrape_urls = True
 
     @classmethod
     def create(
@@ -267,6 +268,7 @@ class Coder:
         num_cache_warming_pings=0,
         suggest_shell_commands=True,
         chat_language=None,
+        scrape_urls=True,
     ):
         # Fill in a dummy Analytics if needed, but it is never .enable()'d
         self.analytics = analytics if analytics is not None else Analytics()
@@ -278,6 +280,7 @@ class Coder:
         self.rejected_urls = set()
         self.abs_root_path_cache = {}
         self.ignore_mentions = set()
+        self.scrape_urls = scrape_urls
 
         self.suggest_shell_commands = suggest_shell_commands
 
@@ -764,7 +767,8 @@ class Coder:
             return self.commands.run(inp)
 
         self.check_for_file_mentions(inp)
-        self.check_for_urls(inp)
+        if self.scrape_urls:
+            self.check_for_urls(inp)
 
         return inp
 
